@@ -1,72 +1,22 @@
 #include <cstdio>
-#include <cstdlib>
-#include <cstring>
-const int MAXN = 1E5;
+#include <regex.h>
+using namespace std;
 
-char str[MAXN] = "2x^2+3*x+1=0";
-char c1[MAXN];
-char c2[MAXN];
-char c3[MAXN];
-
+const int MAXN = 1e3;
 int main()
 {
-   // scanf("%s", str);
-    int lenStr = strlen(str);
-    int lenX = 0, lenSym = 0;
-    for(int i = 0; i < lenStr; i++)
+   // char pattern[MAXN] = "\\d*(?=x\\^2)";
+    char pattern[MAXN] = "\\d";
+    char text[MAXN] = "4x^2+23*x+1=0";
+    int flag = REG_EXTENDED;
+    regex_t reg;
+    regcomp(&reg, pattern, flag);
+    regmatch_t pmatch[5];
+    int status = regexec(&reg, text, 5, pmatch, 0);
+    int j = 0;
+    for(int i = pmatch[j].rm_so; i < pmatch[j].rm_eo && j < 5; i++, j++)
     {
-        if(str[i] == 'x')
-            lenX++;
-        else if(str[i] == '-' || str[i] == '+')
-           lenSym++; 
+        printf("%c", text[i]);
     }
-
-    int fun = 0;
-    if(str[0] == '-')
-    {
-        if(lenX == 2 && lenSym == 3)
-            fun = 1;
-        else if(lenX == 2 && lenSym == 2)
-            fun = 2;
-        else if(lenX == 1 && lenSym == 2)
-            fun = 3;
-        else if(lenX == 1)
-        {
-            printf("x1=x2=0");            
-            return 0;
-        }
-    }
-    else
-    {
-        if(lenX == 2 && lenSym == 2)
-            fun = 4;
-        else if(lenX == 2 && lenSym == 1)
-            fun = 5;
-        else
-        {
-            printf("x1=x2=0");
-            return 0;
-        }
-    }
-    switch(fun)
-    {
-        case 1:
-        case 4:
-            sscanf(str, "%[^x]x^2%[^\*]\*x%[^=0]", c1, c2, c3);
-            break;
-    }
-    printf("%s\n%s\n%s\n", c1, c2, c3);
-    int a, b, c;
-    if(c1[0] == '-')
-    {
-        c1 = c1.substr(1, len(c1) - 1);
-        a = -1 * atoi(c1);
-    }
-    if(c2[0] == '+')
-    {
-        
-    }
-    if(c1 == "")
-        printf("1");
     return 0;
 }
