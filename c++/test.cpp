@@ -1,22 +1,50 @@
 #include <cstdio>
-#include <regex.h>
+#include <algorithm>
 using namespace std;
 
-const int MAXN = 1e3;
+const int MAXN = 1e4;
+int v[MAXN];
+int w[MAXN];
+double y[MAXN];
+int n, m;
+
+bool fun(double x)
+{
+    for(int i = 0; i < n; i++)
+        y[i] = v[i] - x*w[i];
+    sort(y, y + n);
+    double sum = 0;
+    
+    for(int i = 0; i < n - m; i++)
+        sum += y[n - i - 1];
+    /*
+    for(int i = n - 1; i > m - 1; i--)
+        sum += y[i];*/
+    return sum >= 0;    
+}
+
+void solve()
+{
+    double l = 0, r = 1e10;
+    for(int i = 0 ; i < 100; i++)
+    {
+        double mid = (l + r) / 2;
+        if(fun(mid))
+            l = mid;
+        else
+            r = mid;
+    }
+    printf("%.0lf\n", r * 100);
+}
 int main()
 {
-   // char pattern[MAXN] = "\\d*(?=x\\^2)";
-    char pattern[MAXN] = "\\d";
-    char text[MAXN] = "4x^2+23*x+1=0";
-    int flag = REG_EXTENDED;
-    regex_t reg;
-    regcomp(&reg, pattern, flag);
-    regmatch_t pmatch[5];
-    int status = regexec(&reg, text, 5, pmatch, 0);
-    int j = 0;
-    for(int i = pmatch[j].rm_so; i < pmatch[j].rm_eo && j < 5; i++, j++)
+    while(scanf("%d %d", &n, &m)&& n && m)
     {
-        printf("%c", text[i]);
+        for(int i = 0; i < n; i++)
+            scanf("%d", &v[i]);
+        for(int i = 0; i < n; i++)
+            scanf("%d", &w[i]);
+        solve();
     }
     return 0;
 }
