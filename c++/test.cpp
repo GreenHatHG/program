@@ -24,6 +24,11 @@ int main()
             }
             if(flag == 1)
             {
+                if(n == 2)
+                {
+                    printf("1");
+                    return 0;
+                }
                 if(tmp2 != -1)
                 {
                     tmp2 -= 1;
