@@ -37,10 +37,8 @@ int main()
                 else if(i == n - 1)
                     flag = tmp - 1;
             }
-            if(tmp2 != -1)
-                cnt = cnt > tmp2 ? cnt : tmp2;
-            else
-                cnt = cnt > tmp ? cnt : tmp;
+            cnt = cnt > tmp2 ? cnt : tmp2;
+            cnt = cnt > tmp ? cnt : tmp;
         }
         else
         {
