@@ -42,22 +42,26 @@ int main()
         }
         else
         {
-            if(n == 2)
+
+            if(n == 2 && arr[0] == 999)
             {
                 printf("1");
                 return 0;
             }
-            if(arr[n - 2] == 999 && tmp > cnt - 2)
+            else if(arr[n - 2] == 999 && tmp > cnt - 2)
             {
                 printf("%d", tmp);
                 return 0;
             }
+            else
+                cnt = cnt > tmp + 1 ? cnt : tmp + 1;
         }
     }
     if(cnt <= 2)
         printf("0");
     else
     {
+
         if(flag > 1 && flag > cnt - 2)
             printf("%d", flag);
         else
