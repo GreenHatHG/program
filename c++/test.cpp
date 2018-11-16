@@ -24,7 +24,7 @@ int main()
             }
             if(flag == 1)
             {
-                if(n == 2)
+                if(n == 2 && arr[1] == arr[0] + 1)
                 {
                     printf("1");
                     return 0;
