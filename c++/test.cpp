@@ -13,7 +13,7 @@ int main()
     for(int i = 1; i < n; i++)
     {
         scanf("%d", arr + i);
-        if(arr[i] != 1000)
+        
         {
             if(arr[i] == arr[i-1] + 1)
                 tmp++;
@@ -40,9 +40,8 @@ int main()
             cnt = cnt > tmp2 ? cnt : tmp2;
             cnt = cnt > tmp ? cnt : tmp;
         }
-        else
+        
         {
-
             if(n == 2 && arr[0] == 999)
             {
                 printf("1");
@@ -53,15 +52,12 @@ int main()
                 printf("%d", tmp);
                 return 0;
             }
-            else
-                cnt = cnt > tmp + 1 ? cnt : tmp + 1;
         }
     }
     if(cnt <= 2)
         printf("0");
     else
     {
-
         if(flag > 1 && flag > cnt - 2)
             printf("%d", flag);
         else
