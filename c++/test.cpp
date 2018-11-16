@@ -47,7 +47,7 @@ int main()
                 printf("1");
                 return 0;
             }
-            if(tmp > cnt - 2)
+            if(arr[n - 2] == 999 && tmp > cnt - 2)
             {
                 printf("%d", tmp);
                 return 0;
