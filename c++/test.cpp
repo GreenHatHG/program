@@ -1,72 +1,35 @@
 #include <cstdio>
-#include <algorithm>
+#include <map>
 using namespace std;
+
+const int MAXN = 1e6;
+int ans[MAXN];
+multimap<int, int>m;
 
 int main()
 {
-    int arr[110];
     int n;
     scanf("%d", &n);
-    int flag1 = 0, flag2 = 0;
+    int tmp, sum = 0;
     for(int i = 0; i < n; i++)
-        scanf("%d", arr + i);
-    if(arr[0] == 1)
-        flag1 = 1;
-    if(arr[n - 1] == 1000)
-        flag2 = 1;
-    if(n == 1)
     {
-        printf("0");
-        return 0;
+        scanf("%d", &tmp);
+        m.insert(pair<int,int>(tmp ,i+1));
+        sum += tmp;
     }
-    if(!flag2 && ! flag1 && n ==2)
+    multimap<int, int>::iterator it;
+    int len = 0;
+    for(it = m.begin(); it != m.end(); it++)
     {
-        printf("0");
-        return 0;
+        int t = sum - it->first;
+        if(t % 2 != 0)
+            continue;
+        multimap<int, int>::iterator pos = m.find(t/2);
+        if(pos->second != it->second && pos != m.end() )
+            ans[len++] = it->second;
     }
-    int tmp = 1, cnt = 0, flag = 0;
-    for(int i = 1; i < n; i++)
-    {
-        if(arr[i] == arr[i - 1] + 1)
-            tmp++;
-        else
-        {
-            if(!flag && flag1)
-            {
-                flag1 = tmp;
-                flag = 1;
-            }
-            tmp = 1;
-        }
-        cnt = cnt > tmp ? cnt : tmp;
-    }
-    if(!flag && !flag2 && flag1)
-    {
-        printf("%d", cnt - 1);
-        return 0;
-    }
-    if(flag1 && !flag2)
-    {
-        if(flag1 - 1 > cnt - 2)
-        {
-            printf("%d", flag1 - 1);
-            return 0;
-        }
-    }
-    else if(flag2 && !flag1)
-    {
-        if(tmp - 1 > cnt - 2)
-        {
-            printf("%d", tmp - 1);
-            return 0;
-        }
-    }
-    else if(flag1 && flag2)
-    {
-       cnt = max(flag1 - 1, max(cnt - 2, tmp -1));
-       printf("%d", cnt >= 0 ? cnt : 0);
-       return 0;
-    }
-    printf("%d", cnt - 2 >= 0 ? cnt - 2 : 0);
+    printf("%d\n", len);
+    for(int i = 0; i < len; i++)
+        printf("%d ", ans[i]);
     return 0;
 }
