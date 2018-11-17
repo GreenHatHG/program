@@ -64,9 +64,9 @@ int main()
     else if(flag1 && flag2)
     {
        cnt = max(flag1 - 1, max(cnt - 2, tmp -1));
-       printf("%d", cnt);
+       printf("%d", cnt >= 0 ? cnt : 0);
        return 0;
     }
-    printf("%d", cnt - 2);
+    printf("%d", cnt - 2 >= 0 ? cnt - 2 : 0);
     return 0;
 }
