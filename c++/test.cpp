@@ -14,7 +14,12 @@ int main()
         flag1 = 1;
     if(arr[n - 1] == 1000)
         flag2 = 1;
-    if(!flag2 && ! flag1 && n <=2)
+    if(n == 1)
+    {
+        printf("0");
+        return 0;
+    }
+    if(!flag2 && ! flag1 && n ==2)
     {
         printf("0");
         return 0;
@@ -35,7 +40,7 @@ int main()
         }
         cnt = cnt > tmp ? cnt : tmp;
     }
-    if(!flag && !flag2)
+    if(!flag && !flag2 && flag1)
     {
         printf("%d", cnt - 1);
         return 0;
