@@ -1,44 +1,37 @@
 #include <cstdio>
-#include <map>
 using namespace std;
+
 typedef long long ll;
-
-const int MAXN = 1e6 + 10;
-ll ans[MAXN] = {0};
-ll flag[MAXN] = {0};
-multimap<ll, ll>m;
-
+const int MAXN = 1E6;
+ll arr[MAXN];
 int main()
 {
-    ll n;
-    scanf("%lld", &n);
-    ll tmp, sum = 0;
-    for(int i = 0; i < n; i++)
+    int n, m, l, cnt = 0;
+    scanf("%d %d %d", &n, &m, &l);
+    for(int i = 1; i <= n; i++)
     {
-        scanf("%lld", &tmp);
-        m.insert(pair<ll,ll>(tmp ,i+1));
-        sum += tmp;
+        scanf("%lld", arr+i);
+        if(arr[i-1] <= l && arr[i] > l)
+            cnt++;
     }
-    multimap<ll, ll>::iterator it;
-    ll len = 0;
-    for(it = m.begin(); it != m.end(); it++)
+    int q, p, d;
+    while(m--)
     {
-        ll t = sum - it->first;
-        if(t % 2 == 0 && flag[it->first] == 0)
+        scanf("%d", &q);
+        if(q == 0)
+            printf("%d\n", cnt);
+        else
         {
-            multimap<ll, ll>::iterator pos = m.find((ll)t/2);
-            if(pos->second != it->second && pos != m.end() )
+            scanf("%d %d", &p, &d);
+            if(arr[p] <= l && (arr[p]+d) > l)
             {
-                flag[it->first] = 1;
-                len += m.count(it->first);
+                if(arr[p-1] <= l && arr[p+1]<= l)
+                    cnt++;
+                else if(arr[p-1] > l && arr[p+1] > l)
+                    cnt--;
             }
+            arr[p] += d;
         }
-    }
-    printf("%lld\n", len);
-    for(it = m.begin(); it != m.end(); it++)
-    {
-        if(flag[it->first])
-            printf("%lld ", it->second);
     }
     return 0;
 }
