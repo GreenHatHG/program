@@ -1,0 +1,10 @@
+/* pages/wxml/index.wxss */
+
+.ele{
+  color:red
+}
+
+#ele{
+  color:pink
+}
+

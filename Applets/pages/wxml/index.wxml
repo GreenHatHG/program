@@ -1,0 +1,60 @@
+<!--pages/wxml/index.wxml-->
+<text>pages/wxml/index.wxml</text>
+<view>
+<text data-test="{{time}}">Hello view</text>
+</view>
+
+<image class="userinfo-avatar" src="./a.png"></image>
+
+<text>当前时间:{{time}}</text>
+
+<text>{{a === 10 ? "yes" : "no"}}</text>
+<view>{{a+b}}+{{c}}</view>
+
+<view>{{"Hello" + name}}</view>
+
+<view wx:if="{{a>1}}">1</view>
+<view wx:elif="{{a === 1}}">2</view>
+<view wx:else>3</view>
+
+<block wx:if="{{true}}">
+<view>1</view>
+<view>3</view>
+</block>
+
+<view wx:for="{{array}}">
+{{index}}:{{item.message}}
+</view>
+
+<view wx:for="{{array}}" wx:for-index="inx" wx:for-item="n">
+{{inx}}:{{n.message}}
+</view>
+
+<template name="odd">
+<view>odd</view>
+</template>
+
+<template name="even">
+<view>even</view>
+</template>
+
+<block wx:for="{{[1,2,3,4,5]}}">
+<template is="{{item % 2 == 0 ? 'even' : 'odd'}}" />
+</block>
+
+<import src="item.wxml"/>
+<template is="item" data="{{text:'test'}}" />
+
+<include src="header.wxml"/>
+<view>body</view>
+<include src="footer.wxml" />
+
+<view style="color:red; font-size=48rpx">hello style</view>
+
+<view style="color:{{color}}; font-size:{{font}}"> hello</view>
+
+<view class="ele">class</view> 
+                                     
+
+
+
