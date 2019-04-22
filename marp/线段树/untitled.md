@@ -113,22 +113,70 @@ struct node
     int left, right; //区间[left, right]
 };
 struct node tree[1000];
+int father[100]; //记录某个点的序号，方便查找对应的数组下标
 ```
 
 ---
 ![bg](bg.jpg)
 # 建树
 ```c++
-//为区间[left, right]建立一个以index为祖先的线段树，index为根节点下标
-void Build_tree(int index, int left, int right)
+Build_tree(1, 1, 6);
+//为区间[left, right]建立一个以top为祖先的线段树，top为根节点下标
+void Build_tree(int top, int left, int right)
 {
-    tree[i].left = left; //写入第index个结点的左区间
-    tree[i].right = right; //写入第index个结点的右区间
-    tree[i].value = 0; //每个区间的值初始化为0
-    if(left == right) //区间长度为0时，结束递归
+	if(left == right)	//区间长度为0时，赋值并且结束递归
+    {
+    	tree[top].value = arr[left];
+        father[left] = top;
         return;
+    }
+    tree[top].left = left; //写入第index个结点的左区间
+    tree[top].right = right; //写入第index个结点的右区间
+    tree[top].value = 0; //每个区间的值初始化为0
+
     int mid = (right + left) / 2; //取区间中点
-    Build_tree(index*2, left, mid);  //往左孩子方向继续建立线段树
-    Build_tree(index*2+1, mid + 1, right);  //往右孩子方向继续建立线段树
+    int left_node = top * 2; //左孩子下标
+    int right_node = top * 2 + 1;  //右孩子下标
+    Build_tree(left_node, left, mid);  //往左孩子方向继续建立线段树
+    Build_tree(right_node, mid + 1, right);  //往右孩子方向继续建立线段树
+    tree[top].value = tree[left_node].value + tree[right_node].value; //更新结点值为左右孩子的和
+}
+```
+
+---
+![bg](bg.jpg)
+# 更新
+更新数组的第5个元素的值为6，直接在树里面更新该结点的值后，然后从父结点往上更新，直到更新到了根结点。
+```c++
+int main()
+{
+    tree[father[5]].value = 6;
+    Update(father[5]);
+}
+
+void Update(int index)	//index为要修改那个点的数组下标
+{
+    int father_node = index / 2; //父结点下标
+    int left_node = father_node * 2;   //左孩子下标
+    int right_node = father_node * 2 + 1;   //右孩子下标
+    cout << father_node << endl;
+    tree[father_node].value = tree[left_node].value + tree[right_node].value; //更新值
+    if(father_node == 1) //找到树的根结点，终止退出
+    	return;
+    Update(father_node); //递归更新，由父结点往上找
+}
+```
+
+---
+![bg](bg.jpg)
+# 查询
+查询[3,6]区间的和
+
+```c++
+int Query(int index, int L, int R)
+{
+    if(tree[index].left == L && tree[right] == R)
+        return tree[index].value;
+        
 }
 ```
