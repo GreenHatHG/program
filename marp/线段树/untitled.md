@@ -124,16 +124,16 @@ Build_tree(1, 1, 6);
 //为区间[left, right]建立一个以top为祖先的线段树，top为根节点下标
 void Build_tree(int top, int left, int right)
 {
-	if(left == right)	//区间长度为0时，赋值并且结束递归
+    tree[top].left = left; //写入第index个结点的左区间
+    tree[top].right = right; //写入第index个结点的右区间
+    tree[top].value = 0; //每个区间的值初始化为0
+
+    if(left == right)	//区间长度为0时，赋值并且结束递归
     {
     	tree[top].value = arr[left];
         father[left] = top;
         return;
     }
-    tree[top].left = left; //写入第index个结点的左区间
-    tree[top].right = right; //写入第index个结点的右区间
-    tree[top].value = 0; //每个区间的值初始化为0
-
     int mid = (right + left) / 2; //取区间中点
     int left_node = top * 2; //左孩子下标
     int right_node = top * 2 + 1;  //右孩子下标
@@ -159,7 +159,6 @@ void Update(int index)	//index为要修改那个点的数组下标
     int father_node = index / 2; //父结点下标
     int left_node = father_node * 2;   //左孩子下标
     int right_node = father_node * 2 + 1;   //右孩子下标
-    cout << father_node << endl;
     tree[father_node].value = tree[left_node].value + tree[right_node].value; //更新值
     if(father_node == 1) //找到树的根结点，终止退出
     	return;
@@ -169,14 +168,60 @@ void Update(int index)	//index为要修改那个点的数组下标
 
 ---
 ![bg](bg.jpg)
-# 查询
-查询[3,6]区间的和
+# 查询[L,R]区间
+![90%](6.png)
+先查询左子树：
+1. 如果满足条件3 >= L,则要查询的区间有涉及左子树，例如查询[1,2]，[2,4]
+   - 如果满足3 >= R,则要查询的区间完全在左子树，例如[1,2]，这时候要查询的区间不变
+   - 如果不满足3 >= R,则要查询的区间不完全在左子树，例如[2,4]，这时候就需要查询在左子树那边的区间，所以要查询[2,3]
 
+---
+![bg](bg.jpg)
+# 查询[L,R]区间
+![90%](6.png)
+同理再查询左子树：
+1. 如果满足条件R >= 4,则要查询的区间有涉及右子树，例如查询[4,6]，[2,5]
+   - 如果满足L >= 4,则要查询的区间完全在右子树，例如[4,6]，这时候要查询的区间不变
+   - 如果不满足L >= 4,则要查询的区间不完全在右子树，例如[2,5]，这时候就需要查询在右子树那边的区间，所以要查询[4,5]
+
+
+---
+![bg](bg.jpg)
+# 查询
 ```c++
-int Query(int index, int L, int R)
-{
-    if(tree[index].left == L && tree[right] == R)
-        return tree[index].value;
-        
+//从index开始查询，所以index一般为树的根结点,查询的区间是[L,R]，结果保留在ans里面
+void Query(int index, int L, int R, int& ans){
+    if(tree[index].left == L && tree[index].right == R) //找到了一个完全重合的区间
+    {
+        ans += tree[index].value;
+        return;
+    }
+    int left_node = index*2;
+    if(L <= tree[left_node].right) //左区间有涉及
+    {
+    	if(R <= tree[left_node].right) //全包含于左区间，查询区间不变
+        	Query(left_node, L, R, ans);
+        else //半包含于左区间，则查询区间拆分，左端点不变，右端点变为左孩子的右区间端点
+        	Query(left_node, L, tree[left_node].right, ans);
+    }
+    int right_node = left_node + 1;
+    if(R >= tree[right_node].left) //右区间有涉及
+    {
+    	if(L >= tree[right_node].left) //全包含于右区间，查询区间不变
+        	Query(right_node, L, R, ans);
+        else //半包含于左区间，则查询区间拆分，与上同理
+        	Query(right_node, tree[right_node].left, R, ans);
+    }
 }
 ```
+
+---
+![bg](bg.jpg)
+<img src="10.png" height="700" width="1500">
+<br/><br/>
+
+---
+![bg](bg.jpg)
+[模板题HDU1754](http://acm.hdu.edu.cn/showproblem.php?pid=1754)
+![75%](timu.png)
+<br/>
