@@ -2,7 +2,7 @@
 <!-- page_number: true -->
 
 ![bg](bg.jpg)
-# 数据结构--线段树
+# 数据结构--线段树（segment）
 
 ---
 ![bg](bg.jpg)
@@ -44,6 +44,15 @@ sum_arr[2]=arr[0]+arr[1]+arr[2]
 
 ---
 ![bg](bg.jpg)
+# 线段树简介
+线段树是一种二叉搜索树，它将一个区间划分成一些单元区间，每个单元区间对应线段树中的一个叶结点。使用线段树可以快速的查找某一个节点在若干条线段中出现的次数，时间复杂度为O(logn)。是一种可以在很短的时间内对某个区间进行操作的数据结构。
+<br/>
+
+可用于：
+单点修改、区间修改、区间查询（如：区间求和，求区间最大值，求区间最小值……）
+
+---
+![bg](bg.jpg)
 # 线段树构建
 |数组下标| 1|2| 3|4|5|6|
 |----- | ------|----|----|----|----|----|
@@ -66,6 +75,7 @@ sum_arr[2]=arr[0]+arr[1]+arr[2]
 |----- | ------|----|----|----|----|----|
 |数组元素|1|3|5|7|9|11|
 ![](5.png)
+
 
 ---
 ![bg](bg.jpg)
@@ -139,7 +149,8 @@ void Build_tree(int top, int left, int right)
     int right_node = top * 2 + 1;  //右孩子下标
     Build_tree(left_node, left, mid);  //往左孩子方向继续建立线段树
     Build_tree(right_node, mid + 1, right);  //往右孩子方向继续建立线段树
-    tree[top].value = tree[left_node].value + tree[right_node].value; //更新结点值为左右孩子的和
+    //更新结点值为左右孩子的和
+    tree[top].value = tree[left_node].value + tree[right_node].value; 
 }
 ```
 
@@ -191,22 +202,19 @@ void Update(int index)	//index为要修改那个点的数组下标
 ```c++
 //从index开始查询，所以index一般为树的根结点,查询的区间是[L,R]，结果保留在ans里面
 void Query(int index, int L, int R, int& ans){
-    if(tree[index].left == L && tree[index].right == R) //找到了一个完全重合的区间
-    {
+    if(tree[index].left == L && tree[index].right == R){ //找到了一个完全重合的区间
         ans += tree[index].value;
         return;
     }
     int left_node = index*2;
-    if(L <= tree[left_node].right) //左区间有涉及
-    {
+    if(L <= tree[left_node].right){ //左区间有涉及
     	if(R <= tree[left_node].right) //全包含于左区间，查询区间不变
         	Query(left_node, L, R, ans);
         else //半包含于左区间，则查询区间拆分，左端点不变，右端点变为左孩子的右区间端点
         	Query(left_node, L, tree[left_node].right, ans);
     }
     int right_node = left_node + 1;
-    if(R >= tree[right_node].left) //右区间有涉及
-    {
+    if(R >= tree[right_node].left){ //右区间有涉及
     	if(L >= tree[right_node].left) //全包含于右区间，查询区间不变
         	Query(right_node, L, R, ans);
         else //半包含于左区间，则查询区间拆分，与上同理
@@ -218,117 +226,38 @@ void Query(int index, int L, int R, int& ans){
 ---
 ![bg](bg.jpg)
 <img src="10.png" height="700" width="1500">
-<br/><br/>
-
----
-![bg](bg.jpg)
-[模板题HDU1754](http://acm.hdu.edu.cn/showproblem.php?pid=1754)
-![75%](timu.png)
 <br/>
 
 ---
 ![bg](bg.jpg)
-```C++
-/*
-936MS	8336K
-*/
-#include <cstdio>
-#include <iostream>
-#include <algorithm>
-using namespace std;
+[模板题HDU1754](http://acm.hdu.edu.cn/showproblem.php?pid=1754)
+![65%](timu.png)
+<br/>
 
-const int MAXNODE = 2e5*4;
+---
+![bg](bg.jpg)
+936MS	8336K（注意，线段树需要空间比较大，数组开小可能会wa或者TLE，一般为4n）
+![](11.png)
+<br/>
 
-struct node
-{
-    int value;
-    int left, right;
-}tree[MAXNODE];
-int father[MAXNODE];
+---
+![bg](bg.jpg)
+# 线段树部分优化
+1. `a*2`可以用`a<<1`代替，`a/2`可以用`a>>1`代替。（位运算其实就是直接对在内存中的二进制数据进行操作，因此处理数据的速度非常快）
+2. 因为下标为a的节点的左儿子下标为`a*2`，右儿子下标为`a*2+1`，所以可以
 
-void Build_tree(int i, int left, int right)
-{
-    tree[i].left = left;
-    tree[i].right = right;
-    tree[i].value = 0;
-    if(left == right)
-    {
-        father[left] = i;
-        return;
-    }
-    Build_tree(i*2, left, (left+right)/2);
-    Build_tree(i*2+1, (left+right)/2+1, right);
-}
-
-void Update(int ch)
-{
-    if(ch == 1)
-        return;
-    int fa = ch / 2;
-    int num1 = tree[fa * 2].value;
-    int num2 = tree[fa * 2 + 1].value;
-    tree[fa].value = max(num1, num2);
-    Update(fa);
-}
-
-int MAX;
-void Query(int i, int L, int R)
-{
-    if(tree[i].left == L && tree[i].right == R)
-    {
-        MAX = max(MAX, tree[i].value);
-        return;
-    }
-    i *= 2;
-    if(L <= tree[i].right)
-    {
-        if(R <= tree[i].right)
-            Query(i, L, R);
-        else
-            Query(i, L, tree[i].right);
-    }
-    i++;
-    if(R >= tree[i].left)
-    {
-        if(L >= tree[i].left)
-            Query(i, L, R);
-        else
-            Query(i, tree[i].left, R);
-    }
-}
-
-int main()
-{
-    int n, m, num;
-    int a, b;
-    char op;
-    while(scanf("%d %d", &n, &m) != EOF)
-    {
-        Build_tree(1, 1, n);
-        for(int i = 1; i <= n; i++)
-        {
-            scanf("%d", &num);
-            tree[father[i]].value = num;
-            Update(father[i]);
-        }
-
-        while(m--)
-        {
-            getchar();
-            scanf("%c %d %d", &op, &a, &b);
-            if(op == 'Q')
-            {
-                MAX = 0;
-                Query(1, a, b);
-                printf("%d\n", MAX);
-            }
-            else
-            {
-                tree[father[a]].value = b;
-                Update(father[a]);
-            }
-        }
-    }
-    return 0;
-}
+```c++
+//加入一些编译预处理指令可以提高编程效率，加快编译速度
+#define LS(a) (a << 1)
+// a<<1 等同于 a*2
+#define RS(a) (a << 1 | 1)
+// a<<1|1 等同于 a*2+1
 ```
+
+---
+![bg](bg.jpg)
+# 线段树进阶
+1. Lazy标记--用于同时更新一段区间的值：[poj3468 A Simple Problem with Integers](http://poj.org/problem?id=3468)
+2. 线段树离散化（节约空间）--[poj2528 Mayor's posters](http://poj.org/problem?id=2528)
+3. 线段树应用：扫描线问题（求多个矩形互相覆盖后的面积）：[poj1151 Atlantis](http://poj.org/problem?id=1151)
+4. 可持久化（保留整个操作的历史）--主席树
