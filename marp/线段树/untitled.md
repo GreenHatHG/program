@@ -225,3 +225,110 @@ void Query(int index, int L, int R, int& ans){
 [模板题HDU1754](http://acm.hdu.edu.cn/showproblem.php?pid=1754)
 ![75%](timu.png)
 <br/>
+
+---
+![bg](bg.jpg)
+```C++
+/*
+936MS	8336K
+*/
+#include <cstdio>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+const int MAXNODE = 2e5*4;
+
+struct node
+{
+    int value;
+    int left, right;
+}tree[MAXNODE];
+int father[MAXNODE];
+
+void Build_tree(int i, int left, int right)
+{
+    tree[i].left = left;
+    tree[i].right = right;
+    tree[i].value = 0;
+    if(left == right)
+    {
+        father[left] = i;
+        return;
+    }
+    Build_tree(i*2, left, (left+right)/2);
+    Build_tree(i*2+1, (left+right)/2+1, right);
+}
+
+void Update(int ch)
+{
+    if(ch == 1)
+        return;
+    int fa = ch / 2;
+    int num1 = tree[fa * 2].value;
+    int num2 = tree[fa * 2 + 1].value;
+    tree[fa].value = max(num1, num2);
+    Update(fa);
+}
+
+int MAX;
+void Query(int i, int L, int R)
+{
+    if(tree[i].left == L && tree[i].right == R)
+    {
+        MAX = max(MAX, tree[i].value);
+        return;
+    }
+    i *= 2;
+    if(L <= tree[i].right)
+    {
+        if(R <= tree[i].right)
+            Query(i, L, R);
+        else
+            Query(i, L, tree[i].right);
+    }
+    i++;
+    if(R >= tree[i].left)
+    {
+        if(L >= tree[i].left)
+            Query(i, L, R);
+        else
+            Query(i, tree[i].left, R);
+    }
+}
+
+int main()
+{
+    int n, m, num;
+    int a, b;
+    char op;
+    while(scanf("%d %d", &n, &m) != EOF)
+    {
+        Build_tree(1, 1, n);
+        for(int i = 1; i <= n; i++)
+        {
+            scanf("%d", &num);
+            tree[father[i]].value = num;
+            Update(father[i]);
+        }
+
+        while(m--)
+        {
+            getchar();
+            scanf("%c %d %d", &op, &a, &b);
+            if(op == 'Q')
+            {
+                MAX = 0;
+                Query(1, a, b);
+                printf("%d\n", MAX);
+            }
+            else
+            {
+                tree[father[a]].value = b;
+                Update(father[a]);
+            }
+        }
+    }
+    return 0;
+}
+```
